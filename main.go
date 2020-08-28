@@ -1,48 +1,41 @@
-package main
+package gormseeder
 
 import (
-	"fmt"
+	"log"
 
-	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
+	L "github.com/zkynetio/logger"
+	"github.com/zkynetio/pi/backend/src/db"
 )
 
-func main() {
-
-	// Get model
-	// Detect fields types in model
-	modelDetect := detect()
-	fmt.Println(modelDetect)
-
+func Init(connectionString string, databaseName string) {
+	Connect(connectionString, databaseName)
+	Connection.LogMode(false)
+	Connection.SetLogger(&L.GORMLogger{})
+}
+func Run(Model interface{}, numberOfRecord int) {
 	// Generate rand data based on field?
-	generate := generateFields()
-	fmt.Println(generate)
+	generateFields(&Model)
 
 	// Inject field to DB with rand data
-	injectFields := inject()
-	fmt.Println(injectFields)
-
+	SaveModelToDatabase(&Model)
 }
 
-func setConnection(db *gorm.DB) {
-
-	fmt.Println(db)
-
+type Test struct {
+	ID  string
+	Ble string
 }
 
-func detect() string {
+func generateFields(Model interface{}) {
 
-	return "detected"
-
+	// TODO ... FILL THE MODEL...
+	log.Println("HERE WE DO ALL THE DETECTING AND FILLING")
 }
-
-func generateFields() string {
-
-	return "Generating fields"
-
-}
-func inject() string {
-
-	return "Injecting fields into DB"
-
+func SaveModelToDatabase(model interface{}) error {
+	err := db.Create(&model)
+	if err != nil {
+		err.Log()
+		return err
+	}
+	return nil
 }
