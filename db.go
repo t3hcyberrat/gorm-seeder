@@ -32,6 +32,7 @@ func (m *BaseModel) BeforeCreate(scope *gorm.Scope) error {
 	}
 	return scope.SetColumn("ID", uid)
 }
+
 func Create(m interface{}) *L.InformationConstruct {
 	return L.ParsePGError(Connection.Create(m).Error)
 }
@@ -39,6 +40,7 @@ func Create(m interface{}) *L.InformationConstruct {
 func KeyValueGet(m interface{}, key, value string) *L.InformationConstruct {
 	return L.ParsePGError(Connection.Where(key+" = ?", value).First(m).Error)
 }
+
 func MultiKeyValueGet(m interface{}, key, value []string) *L.InformationConstruct {
 	q := Connection
 	for i := 0; i < len(key)-1; i++ {
@@ -48,15 +50,19 @@ func MultiKeyValueGet(m interface{}, key, value []string) *L.InformationConstruc
 	}
 	return L.ParsePGError(q.First(m).Error)
 }
+
 func KeyValueGetList(m interface{}, key, value string, limit, offset int) *L.InformationConstruct {
 	return L.ParsePGError(Connection.Where(key+" = ?", value).Limit(limit).Offset(offset).Find(m).Error)
 }
+
 func KeyValueSelectGetList(m interface{}, selKey, key, value string, limit, offset int) *L.InformationConstruct {
 	return L.ParsePGError(Connection.Select(selKey).Where(key+" = ?", value).Limit(limit).Offset(offset).Find(m).Error)
 }
+
 func GetList(m interface{}, limit, offset int) *L.InformationConstruct {
 	return L.ParsePGError(Connection.Limit(limit).Offset(offset).Find(m).Error)
 }
+
 func KeyValueGetWithRelations(m interface{}, key, value string, relations []string, autoload bool) *L.InformationConstruct {
 	dbcon := Connection.Set("gorm:auto_preload", autoload)
 	for _, relation := range relations {
@@ -64,9 +70,11 @@ func KeyValueGetWithRelations(m interface{}, key, value string, relations []stri
 	}
 	return L.ParsePGError(dbcon.First(m, key+" = ?", value).Error)
 }
+
 func KeyValueUpdate(m interface{}, key, value string) *L.InformationConstruct {
 	return L.ParsePGError(Connection.Model(m).Where(key+" = ?", value).Updates(m).Error)
 }
+
 func KeyValueUpdateOrCreate(m interface{}, key, value string) *L.InformationConstruct {
 	query := Connection.Model(m).Where(key+" = ?", value).Updates(m)
 	if query.Error != nil {
@@ -82,21 +90,27 @@ func KeyValueUpdateOrCreate(m interface{}, key, value string) *L.InformationCons
 func KeyValueDelete(m interface{}, key, value string) *L.InformationConstruct {
 	return L.ParsePGError(Connection.Where(key+" = ?", value).Delete(m).Error)
 }
+
 func KeyValueHardDelete(m interface{}, key, value string) *L.InformationConstruct {
 	return L.ParsePGError(Connection.Unscoped().Where(key+" = ?", value).Delete(m).Error)
 }
+
 func Increment(m interface{}, key string) error {
 	return L.ParsePGError(Connection.Model(m).Set(key, " = "+key+" + 1").Updates(m).Error)
 }
+
 func KeyValueUpdateColumn(m interface{}, filterKey, value, key string, newValue interface{}) error {
 	return L.ParsePGError(Connection.Model(m).Where(filterKey+" = ?", value).Update(key, newValue).Error)
 }
+
 func KeyValueWhereInSelect(m interface{}, key, value, selKey, inKey string, inList interface{}) *L.InformationConstruct {
 	return L.ParsePGError(Connection.Select(selKey).Where(key+" = ?", value).Where(inKey+" IN (?)", inList).Find(m).Error)
 }
+
 func KeyValueWhereIn(m interface{}, key, value, inKey string, inList interface{}) *L.InformationConstruct {
 	return L.ParsePGError(Connection.Where(key+" = ?", value).Where(inKey+" IN (?)", inList).Find(m).Error)
 }
+
 func WhereIn(m interface{}, inKey string, inList interface{}) *L.InformationConstruct {
 	return L.ParsePGError(Connection.Where(inKey+" IN (?)", inList).Find(m).Error)
 }
@@ -113,30 +127,34 @@ func Ping() error {
 	return Connection.DB().Ping()
 }
 
-func Connect(connectionString string, dbname string) {
+func Connect(dialect string, connectionString string, dbname string) {
+
 	// fmt.Println("connecting to: " + connectionString + " dbname=" + dbname)
 	//db, err := gorm.Open("sqlite3", dbstring)
 	var err error
+
 	if dbname != "" {
-		Connection, err = gorm.Open("postgres", connectionString+" dbname="+dbname)
+		Connection, err = gorm.Open(dialect, connectionString+" dbname="+dbname)
 	} else {
-		Connection, err = gorm.Open("postgres", connectionString)
+		Connection, err = gorm.Open(dialect, connectionString)
 	}
 	if err != nil {
 		panic(err)
 	}
 	ConnectionMap["default"] = Connection
+
 }
 
-func ConnectOther(connectionString string, dbname string, tag string) {
+func ConnectOther(dialect string, connectionString string, dbname string, tag string) {
 	// fmt.Println("connecting to: " + connectionString + " dbname=" + dbname)
 	//db, err := gorm.Open("sqlite3", dbstring)
 	var err error
 	var conn *gorm.DB
+
 	if dbname != "" {
-		conn, err = gorm.Open("postgres", connectionString+" dbname="+dbname)
+		conn, err = gorm.Open(dialect, connectionString+" dbname="+dbname)
 	} else {
-		conn, err = gorm.Open("postgres", connectionString)
+		conn, err = gorm.Open(dialect, connectionString)
 	}
 	if err != nil {
 		panic(err)

@@ -1,7 +1,23 @@
 package main
 
-import gormseeder "github.com/t3hcyberrat/gorm-seeder"
+import (
+	"github.com/jinzhu/gorm"
+	gormseeder "github.com/t3hcyberrat/gorm-seeder"
+)
+
+type Person struct {
+	gorm.Model
+	FirstName string
+	LastName  string
+}
 
 func main() {
-	gormseeder.Run()
+
+	p1 := Person{
+		FirstName: "Peter",
+		LastName:  "Gore",
+	}
+
+	gormseeder.Run(p1)
+
 }
