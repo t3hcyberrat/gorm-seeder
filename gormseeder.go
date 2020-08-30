@@ -2,12 +2,15 @@ package gormseeder
 
 import (
 	"fmt"
-	"log"
 	"reflect"
+
+	"github.com/bxcodec/faker"
 
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	L "github.com/zkynetio/logger"
 )
+
+type ModelWrapper struct{}
 
 // Init ...
 func Init(dialect string, connectionString string, databaseName string) {
@@ -21,8 +24,6 @@ func Init(dialect string, connectionString string, databaseName string) {
 // Run ...
 func Run(Model interface{}) {
 
-	fmt.Println(Model)
-
 	// Generate rand data
 	generateFields(Model)
 
@@ -34,17 +35,31 @@ func Run(Model interface{}) {
 func generateFields(Model interface{}) {
 
 	// TODO ... FILL THE MODEL...
-	log.Println("HERE WE DO ALL THE DETECTING AND FILLING")
+	composedStruct := CreateObject(Model)
 
-	v := reflect.ValueOf(Model)
-	fmt.Println(v)
-
-	typeOfS := v.Type()
-	fmt.Println(typeOfS)
-
-	for i := 0; i < v.NumField(); i++ {
-		fmt.Printf("Field: %s \t \t \tValue: %v \n", typeOfS.Field(i).Name, v.Field(i).Interface())
+	for i, v := range composedStruct {
+		fmt.Println(i, v)
+		switch v.(type) {
+		case string:
+			composedStruct[i] = faker.Email()
+		}
 	}
+
+	fmt.Println(composedStruct)
+
+}
+
+// CreateObject ...
+func CreateObject(Model interface{}) []interface{} {
+
+	modelValues := reflect.ValueOf(Model)
+	ret := make([]interface{}, modelValues.NumField())
+
+	for i := 0; i < modelValues.NumField(); i++ {
+		ret[i] = modelValues.Field(i).Interface()
+	}
+
+	return ret
 
 }
 

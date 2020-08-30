@@ -5,19 +5,15 @@ import (
 	gormseeder "github.com/t3hcyberrat/gorm-seeder"
 )
 
+// Person ...
 type Person struct {
-	gorm.Model
-	FirstName string
+	FirstName int
 	LastName  string
+	gorm.Model
 }
 
 func main() {
 
-	p1 := Person{
-		FirstName: "Peter",
-		LastName:  "Gore",
-	}
-
-	gormseeder.Run(p1)
+	gormseeder.Run(Person{})
 
 }
