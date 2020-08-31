@@ -1,7 +1,6 @@
 package main
 
 import (
-	"github.com/jinzhu/gorm"
 	gormseeder "github.com/t3hcyberrat/gorm-seeder"
 )
 
@@ -35,7 +34,7 @@ type Person struct {
 	AmountWithCurrency string  `gormseeder:"amount_with_currency"`
 	UUIDHypenated      string  `gormseeder:"uuid_hyphenated"`
 	UUID               string  `gormseeder:"uuid_digit"`
-	gorm.Model
+	gormseeder.BaseModel
 }
 
 func main() {
