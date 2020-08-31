@@ -37,6 +37,10 @@ func Create(m interface{}) *L.InformationConstruct {
 	return L.ParsePGError(Connection.Create(m).Error)
 }
 
+func CreateFromMap(m interface{}, mMap map[string]interface{}) *L.InformationConstruct {
+	return L.ParsePGError(Connection.Model(m).Create(mMap).Error)
+}
+
 func KeyValueGet(m interface{}, key, value string) *L.InformationConstruct {
 	return L.ParsePGError(Connection.Where(key+" = ?", value).First(m).Error)
 }
@@ -134,7 +138,7 @@ func Connect(dialect string, connectionString string, dbname string) {
 	var err error
 
 	if dbname != "" {
-		Connection, err = gorm.Open(dialect, connectionString+" dbname="+dbname)
+		Connection, err = gorm.Open(dialect, connectionString+dbname)
 	} else {
 		Connection, err = gorm.Open(dialect, connectionString)
 	}

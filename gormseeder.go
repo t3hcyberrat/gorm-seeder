@@ -24,18 +24,18 @@ func Init(dialect string, connectionString string, databaseName string) {
 func Run(Model interface{}) {
 
 	// Generate rand data
-	generateFields(Model)
+	modelMap := generateFields(Model)
 
 	// Inject field to DB with rand data
-	// SaveModelToDatabase(&Model)
+	SaveModelToDatabase(Model, modelMap)
 
 }
 
-func generateFields(Model interface{}) {
+func generateFields(Model interface{}) map[string]interface{} {
 
 	modelMap := CreateObject(Model)
 
-	for k, v := range modelMap {
+	for k := range modelMap {
 
 		switch k {
 		case "lat":
@@ -98,7 +98,7 @@ func generateFields(Model interface{}) {
 
 	}
 
-	fmt.Println(modelMap)
+	return modelMap
 
 }
 
@@ -125,13 +125,19 @@ func CreateObject(Model interface{}) map[string]interface{} {
 }
 
 // SaveModelToDatabase ...
-func SaveModelToDatabase(model interface{}) error {
+func SaveModelToDatabase(M interface{}, modelMap map[string]interface{}) error {
 
-	err := Create(&model)
-	if err != nil {
-		err.Log()
-		return err
-	}
+	x := reflect.TypeOf(&M)
+	// y := reflect.Indirect(&x)
+
+	fmt.Println(x)
+	// fmt.Println(y)
+
+	// err := CreateFromMap(&x, modelMap)
+	// if err != nil {
+	// 	err.Log()
+	// 	return err
+	// }
 
 	return nil
 

@@ -40,6 +40,7 @@ type Person struct {
 
 func main() {
 
+	gormseeder.Init("mysql", "root:hacktheplanet@/", "nethkr")
 	gormseeder.Run(Person{})
 
 }
