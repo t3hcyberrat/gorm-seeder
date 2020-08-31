@@ -3,12 +3,14 @@ package main
 import (
 	"os"
 
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 	gormseeder "github.com/t3hcyberrat/gorm-seeder"
-	gormwrapper "github.com/zkynet/gorm-wrapper"
 )
 
 // Person ...
 type Person struct {
+	gorm.Model
 	Latitude           float32 `faker:"lat"`
 	Longitude          float32 `faker:"long"`
 	CreditCardNumber   string  `faker:"cc_number"`
@@ -37,18 +39,32 @@ type Person struct {
 	AmountWithCurrency string  `faker:"amount_with_currency"`
 	UUIDHypenated      string  `faker:"uuid_hyphenated"`
 	UUID               string  `faker:"uuid_digit"`
-	gormwrapper.BaseModel
 }
+
+// XXX
 type XXX struct {
 	Name string
+	gorm.Model
 }
 
 func main() {
 
-	err := gormseeder.Init("mysql", "root:hacktheplanet@/", "nethkr", "seeder-connection", true)
+	// db, err := gorm.Open("mysql", "root:hacktheplanet@/nethkr")
+	// if err != nil {
+	// 	panic(err)
+	// }
+
+	// db.SingularTable(true)
+
+	// // Migrate the schema
+	// db.AutoMigrate(&Person{})
+	// db.AutoMigrate(&XXX{})
+
+	err := gormseeder.Init("mysql", "root:hacktheplanet@/nethkr", "seeder-connection", true)
 	if err != nil {
 		os.Exit(1)
 	}
+
 	gormseeder.Run(
 		Person{},
 		XXX{},

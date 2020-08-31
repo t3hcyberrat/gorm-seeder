@@ -16,7 +16,8 @@ const tagName string = "gormseeder"
 var dbTag string
 
 // Init ...
-func Init(dialect string, connectionString string, databaseName string, DBTag string, sqlLogging bool) error {
+func Init(dialect string, connectionString string, DBTag string, sqlLogging bool) error {
+
 	err, _ := logger.Init(&logger.LoggingConfig{
 		DefaultLogTag:   "testing-logs",
 		DefaultLogLevel: logger.LogLevelInfo,
@@ -29,39 +30,50 @@ func Init(dialect string, connectionString string, databaseName string, DBTag st
 	if err != nil {
 		return err
 	}
+
 	dbTag = DBTag
 	connectErr := gormwrapper.Connect(dialect, connectionString, dbTag)
 	if connectErr != nil {
 		connectErr.Log()
 		return connectErr
 	}
+
 	gormwrapper.ConnectionMap[dbTag].LogMode(sqlLogging)
 	if sqlLogging {
 		gormwrapper.ConnectionMap[dbTag].SetLogger(&logger.GORMLogger{})
 	}
+
 	return nil
+
 }
 
 // Run ...
 func Run(Models ...interface{}) {
 
 	for i := range Models {
+
 		err := faker.FakeData(&Models[i])
 		if err != nil {
 			fmt.Println(err)
 		}
+
 		SaveModelToDatabase(Models[i])
+
 		c.Green("Create Type: " + reflect.TypeOf(Models[i]).String())
+
 	}
 
 }
 
 // SaveModelToDatabase ...
 func SaveModelToDatabase(M interface{}) error {
+
 	defer func() {
+
 		if r := recover(); r != nil {
 			logger.GenericError(logger.GetRecoverError(r)).Log()
 		}
+
 	}()
 
 	err := gormwrapper.Create(dbTag, &M)
