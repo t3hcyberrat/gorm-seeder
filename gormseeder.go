@@ -16,7 +16,7 @@ const tagName string = "gormseeder"
 var dbTag string
 
 // Init ...
-func Init(dialect string, connectionString string, DBTag string, sqlLogging bool) error {
+func Init(dialect string, connectionString string, DBTag string, sqlLogging bool, singularTable bool) error {
 
 	err, _ := logger.Init(&logger.LoggingConfig{
 		DefaultLogTag:   "testing-logs",
@@ -32,7 +32,7 @@ func Init(dialect string, connectionString string, DBTag string, sqlLogging bool
 	}
 
 	dbTag = DBTag
-	connectErr := gormwrapper.Connect(dialect, connectionString, dbTag)
+	connectErr := gormwrapper.Connect(dialect, connectionString, dbTag, singularTable)
 	if connectErr != nil {
 		connectErr.Log()
 		return connectErr
