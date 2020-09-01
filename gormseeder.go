@@ -76,7 +76,9 @@ func SaveModelToDatabase(M interface{}) error {
 
 	}()
 
-	err := gormwrapper.Create(dbTag, &M)
+	fmt.Println("Here brah", M)
+
+	err := gormwrapper.Create(dbTag, M)
 	if err != nil {
 		err.Log()
 		return err

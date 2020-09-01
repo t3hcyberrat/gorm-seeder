@@ -60,7 +60,7 @@ func main() {
 	// db.AutoMigrate(&Person{})
 	// db.AutoMigrate(&XXX{})
 
-	err := gormseeder.Init("mysql", "root:hacktheplanet@/nethkr", "seeder-connection", true)
+	err := gormseeder.Init("mysql", "", "seeder-connection", true)
 	if err != nil {
 		os.Exit(1)
 	}
