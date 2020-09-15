@@ -7,8 +7,8 @@ import (
 	"github.com/bxcodec/faker"
 	c "github.com/fatih/color"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"github.com/opensourcez/logger"
 	gormwrapper "github.com/zkynet/gorm-wrapper"
-	"github.com/zkynetio/logger"
 )
 
 const tagName string = "gormseeder"
